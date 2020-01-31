@@ -32,7 +32,11 @@ create    soma[1],\
 		  apic[83] //dend11[83]
 
 
-
+forall {
+	insert pas
+	g_pas = 0.0002
+	e_pas = -65.
+}
 
 
 
@@ -43,9 +47,6 @@ proc geometry() { local i, j
 
 						/* soma[0] geometry */
     soma[0] {
-	insert pas
-	g_pas = 0.0002
-	e_pas = -65.
         nseg = 1
 /* 	diam = 25 */
 /* 	L = 35 */
