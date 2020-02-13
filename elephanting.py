@@ -19,34 +19,26 @@ fs = [fr,frf]
 num_tsteps = len(fr[0])
 dt = 20./num_tsteps
 t = np.arange(num_tsteps)*dt
-for i,nam in enumerate(fs):
-fr_ex = neo.AnalogSignal(100000*fr[0],units=pq.Hz,sampling_rate=1./dt*1*pq.Hz)
-fr_in = neo.AnalogSignal(100000*fr[1],units=pq.Hz,sampling_rate=1./dt*1*pq.Hz)
-# urk = np.zeros(num_tsteps)
-# urk[num_tsteps//4:2*num_tsteps//4]=1
-# urk=10
-# urked = urk#*pq.Hz
-# print(np.min(fr_ex))
-# print(np.shape(urk))
-# print(fr_ex)
-# spikes = stg.homogeneous_poisson_process(urk,t_start=0*pq.ms,t_stop=1000*pq.ms)
-spikes = stg.inhomogeneous_poisson_process(fr_ex,as_array=True)#,t_start=0*pq.ms,t_stop=1000*pq.ms)
-spikes_in = stg.inhomogeneous_poisson_process(fr_in,as_array=True)#,t_start=0*pq.ms,t_stop=1000*pq.ms)
-# # print(spikes)
-# plt.figure()
-# # plt.plot(spikes)
-# plt.plot(t,0.11*np.asarray(fr_ex),'r')
-# plt.hist(spikes,bins=np.linspace(0,21,200))
-# plt.show()
+for i,nam in enumerate(['filter_off','filter_on']):
+    fr_ex = neo.AnalogSignal(100000*fs[i][0],units=pq.Hz,sampling_rate=1./dt*1*pq.Hz)
+    fr_in = neo.AnalogSignal(100000*fs[i][1],units=pq.Hz,sampling_rate=1./dt*1*pq.Hz)
+    spikes = stg.inhomogeneous_poisson_process(fr_ex,as_array=True)
+    spikes_in = stg.inhomogeneous_poisson_process(fr_in,as_array=True)
+    # # print(spikes)
+    # plt.figure()
+    # # plt.plot(spikes)
+    # plt.plot(t,0.11*np.asarray(fr_ex),'r')
+    # plt.hist(spikes,bins=np.linspace(0,21,200))
+    # plt.show()
 
-# plt.figure()
-# # plt.plot(spikes)
-# plt.plot(t,0.11*np.asarray(fr_in),'r')
-# plt.hist(spikes_in,bins=np.linspace(0,21,200))
-# plt.show()
+    # plt.figure()
+    # # plt.plot(spikes)
+    # plt.plot(t,0.11*np.asarray(fr_in),'r')
+    # plt.hist(spikes_in,bins=np.linspace(0,21,200))
+    # plt.show()
 
-pickle.dump(spikes,open('data/firing_signal_basal_inhibition_on.p','wb'))
-pickle.dump(spikes_in,open('data/firing_signal_apical_inhibition_on.p','wb'))
+    pickle.dump(spikes,open('data/firing_signal_basal_inhibition_on_{}.p'.format(nam),'wb'))
+    pickle.dump(spikes_in,open('data/firing_signal_apical_inhibition_on_{}.p'.format(nam),'wb'))
 # pickle.dump(spikes,open('data/filt_firning_signal.p','wb'))
 # pickle.dump(spikes_in,open('data/filt_firning_signal_in.p','wb'))
 
