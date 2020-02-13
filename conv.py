@@ -152,14 +152,31 @@ plt.savefig("plots/convolve_play_num_kernels_{}.png".format(num_kernels))
 fit = np.zeros(num_tsteps)
 firing_rates_opt = []
 for idx in range(num_kernels_to_run):
-    RV = norm(loc=res.x[0 + idx * num_params_per_kernel],scale=res.x[1 + idx * num_params_per_kernel])
+    # RV = norm(loc=res.x[0 + idx * num_params_per_kernel],scale=res.x[1 + idx * num_params_per_kernel])
+    RV = skewnorm(loc=res.x[0 + idx * num_params_per_kernel], scale=res.x[1 + idx * num_params_per_kernel],
+                  a=res.x[3 + idx * num_params_per_kernel])
+
     amp_ = res.x[2 + idx * num_params_per_kernel]
-    long = RV.pdf(t)
+    long = RV.pdf(t)[::-1]
     maxx = np.max(long)
     maxx_arg = np.argmax(long)
     if idx == 1:
-        diff = 5
+        diff = 2
+        ting = 10
         long[maxx_arg+diff:]= long[maxx_arg:-diff]
+        # long[maxx_arg+diff:-ting]=np.linspace(maxx,0,len(long)-(maxx_arg+diff)-ting)
+        # x1 = np.log(10)
+        # x2 = 0
+        # x = np.linspace(x1, x2, 100)
+        # line = np.exp(x)
+
+        xx1 =np.log(maxx)
+        xx2 = -10
+        straight = np.linspace(xx1,xx2,len(long)-(maxx_arg+diff)-ting)
+        some_line = np.exp(straight)
+        long[maxx_arg+diff:-ting]=some_line
+
+        long[-ting:]=0
         long[maxx_arg:maxx_arg+diff]=maxx
 
         # long[maxx_arg+diff:]= long[maxx_arg:-diff]
