@@ -47,10 +47,11 @@ synapse_parameters = {
     'e': 0,  # reversal potential
     # 'syntype': 'ExpSyn',  # synapse type
     # 'tau': 0.005,  # synaptic time constant
-    'syntype': 'Exp2Syn',
+    'syntype': 'ExpSynI',
     'tau1':1.,
     'tau2':3.,
-    'weight': .001,  # synaptic weight
+    'tau':.1,
+    'weight': .1001,  # synaptic weight
     'record_current': True,  # record synapse current
 }
 
@@ -65,6 +66,8 @@ for i in range(6):
 
     if i > 2:
         synapse_parameters['e'] = -80
+        synapse_parameters['weight']=-.1001
+        # synapse_parameters['tau']=30.0
     else:
         synapse_parameters['e'] = 0
     if i in [0, 3]:
@@ -72,6 +75,7 @@ for i in range(6):
         insert_synapses(synapse_parameters,'dend',n_syn)
     if i in [1,4]:
         np.random.seed(1234)
+        # synapse_parameters['tau']=3.
         insert_synapses(synapse_parameters,'apic',n_syn)
     else:
         np.random.seed(1234)
