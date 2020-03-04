@@ -7,7 +7,10 @@ import pickle
 scale_factors = pickle.load(open('data/scale_factors.p','rb'))
 
 channels = 16 #number of electrodes
-
+cut_to_30 =119 #to cut the smooth uptick at the end
+#139 for all
+cut_to_35 = 139 #cut the last 5 ms due to the uptick at the end, messes up smoother
+#159 for all
 height_step = 100
 heights = np.arange(100,1601,height_step)
 
@@ -20,11 +23,18 @@ out_images = ['plots/laminar_LFP_inhib_on.jpg', 'plots/laminar_LFP_inhib_off.jpg
 backgrounds=[]
 ss=[]
 sss=[]
+
+win_len=29#must be odd
+poly_deg=3#must be strictly lower than win_len
+dep = 5 #depth of test-plot. 2 is the spikey one, 6 is/was the uptick end one
 for m,i in enumerate(images):
     scale_low = scale_factors[m][0]
     scale_high = scale_factors[m][1]
 
     img = cv2.imread(i)
+
+    img=img[:,:cut_to_35,:]
+
     img_rgb = cv2.cvtColor(img.copy(),cv2.COLOR_BGR2RGB)
 
 
@@ -116,10 +126,10 @@ for m,i in enumerate(images):
 
     sum_scaled=np.add(red_factor*np.asarray(img_red),blue_factor*np.asarray(img_blue))
     # sum_scaled_smooth = savgol_filter(sum_scaled,15,3,mode='constant')
-    win_len = int(img.shape[0]/4)
-    if win_len%2==0:
-        win_len += 1
-    sum_scaled_smooth = savgol_filter(sum_scaled,win_len,5,mode='constant')
+    # win_len = int(img.shape[0]/4)
+    # if win_len%2==0:
+    #     win_len += 1
+    sum_scaled_smooth = savgol_filter(sum_scaled,win_len,poly_deg,mode='constant')
 
 
     img_rgb = cv2.cvtColor(img.copy(),cv2.COLOR_BGR2RGB)
@@ -134,6 +144,10 @@ img_hstep = 213
 
 for z,j in enumerate(images):
     img = cv2.imread(j)
+
+    img=img[:,:cut_to_30,:]
+
+
     x = np.linspace(0, 3200,img.shape[1])
     img_rgb = cv2.cvtColor(img.copy(), cv2.COLOR_BGR2RGB)
     plt_heights = []
@@ -141,13 +155,13 @@ for z,j in enumerate(images):
     fig,ax = plt.subplots()
     ax.imshow(img_rgb,extent=[0,3200,-3200,0],aspect='equal')
     for i in range(channels):
-        # plt.plot(x,(-i*img_hstep)+100*sss[z][i],color='lime',linestyle='dashed',linewidth=0.5)
-        plt.plot(x,(-i*img_hstep)+100*ss[z][i],color='lime',linestyle='dashed',linewidth=0.5)
+        plt.plot(x[:cut_to_30],(-i*img_hstep)+100*sss[z][i][:cut_to_30],color='lime',linestyle='dashed',linewidth=0.5)
+        # plt.plot(x[cut_to_30],(-i*img_hstep)+100*ss[z][i][:cut_to_30],color='lime',linestyle='dashed',linewidth=0.5)
 
         plt_heights.append(-i*img_hstep)
 
     plt.yticks(plt_heights,heights)
-    plt.xticks(np.linspace(0,3200,timeticks),np.linspace(0,20,timeticks))
+    plt.xticks(np.linspace(0,3200,timeticks),np.linspace(0,30,timeticks))
 
     plt.xlabel('time [ms]')
     plt.ylabel('depth [um]')
@@ -155,7 +169,11 @@ for z,j in enumerate(images):
 pickle.dump(sss,open('data/LFP_lines.p','wb'))
 img = cv2.imread('data/LFP_inhib_off.jpg')
 img_rgb = cv2.cvtColor(img.copy(), cv2.COLOR_BGR2RGB)
-
+plt.figure()
+plt.plot(sss[1][dep],'r')
+plt.plot(ss[1][dep],'k--')
+plt.savefig('filtertest.jpg')
+# plt.show()
 # fig,ax = plt.subplots()
 # ax.imshow(img_rgb,extent=[0,3200,-3200,0],aspect='equal')
 # for i in range(channels):
@@ -199,3 +217,7 @@ print('SMOOTHING ER IKKE HELT TIPP TOPP')
 # plt.ylabel('Voltage [mV]')
 # plt.legend()
 # plt.savefig('plots/LFP_granular.jpg')
+
+print(40/159*139)
+
+print(40/159*119)
