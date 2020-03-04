@@ -22,5 +22,5 @@ plt.xlabel('Time [ms]')
 plt.ylabel('Voltage [mV]')
 plt.savefig('plots/lines.png')
 
-pickle.dump([x_on,y_on],open('data/lines_inh_on.p','wb'))
-pickle.dump([x_blocked,y_blocked],open('data/lines_inh_blocked.p','wb'))
+pickle.dump([x_on,y_on],open('data/lines_inhibition_on.p','wb'))
+pickle.dump([x_blocked,y_blocked],open('data/lines_inhibition_off.p','wb'))

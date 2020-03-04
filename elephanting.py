@@ -9,10 +9,10 @@ import statsmodels.distributions as smd
 import seaborn as sns
 import scipy.stats as st
 
-fr = pickle.load(open('data/firing_inhib_on.p','rb'))
+fr = pickle.load(open('data/firing_inhibition_on.p','rb'))
 # print(np.shape(fr))
 # print(fr)
-frf = pickle.load(open('data/filt_firing_on.p','rb'))
+frf = pickle.load(open('data/filtered_firing_inhibition_on.p','rb'))
 # print(np.shape(fr))
 # print(fr)
 fs = [fr,frf]

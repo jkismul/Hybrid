@@ -86,7 +86,7 @@ for i in range(6):
     P = cell.current_dipole_moment
     p.append(P)
 print("done")
-
+print(np.shape(cell.imem),np.shape(cell.tvec))
 #createfigure
 plt.figure()
 p = np.asarray(p)/n_syn
